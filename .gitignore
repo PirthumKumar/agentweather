@@ -10,3 +10,12 @@ data/model_cache/
 .pytest_cache/
 .DS_Store
 .streamlit/secrets.toml
+.env
+.env.local
+.env.*
+!.env.example
+!.env_example
+
+.venv/
+__pycache__/
+*.pyc
