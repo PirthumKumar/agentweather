@@ -1,6 +1,10 @@
 .env
 .venv/
 __pycache__/
+venv/
+.env
+.env.local
+.env.*.local
 *.pyc
 .ipynb_checkpoints/
 data/local_store/
@@ -10,15 +14,3 @@ data/model_cache/
 .pytest_cache/
 .DS_Store
 .streamlit/secrets.toml
-
-.env
-.env.local
-.env.*.local
-
-# Virtual environment
-.venv/
-venv/
-
-# Python cache
-__pycache__/
-*.pyc
