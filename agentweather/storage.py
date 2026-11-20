@@ -86,6 +86,8 @@ class HopsworksStore:
         kwargs = {"api_key_value": C.HOPSWORKS_API_KEY}
         if C.HOPSWORKS_PROJECT:
             kwargs["project"] = C.HOPSWORKS_PROJECT
+        if C.HOPSWORKS_HOST:
+            kwargs["host"] = C.HOPSWORKS_HOST
         self.project = hopsworks.login(**kwargs)
         self.fs = self.project.get_feature_store()
         self._fgs: dict = {}
