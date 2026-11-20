@@ -46,6 +46,13 @@ def main() -> int:
         r = requests.post("https://api.groq.com/openai/v1/chat/completions", headers={"Authorization": f"Bearer {C.GROQ_API_KEY}"},
                           json={"model": C.GROQ_MODEL, "messages": [{"role": "user", "content": "Say OK"}], "max_tokens": 5}, timeout=30)
         results.append(show(r.ok, "Groq LLM", C.GROQ_MODEL if r.ok else f"HTTP {r.status_code}: {r.text[:100]}"))
+        if not r.ok:   # show which models this key CAN use
+            try:
+                ms = requests.get("https://api.groq.com/openai/v1/models", headers={"Authorization": f"Bearer {C.GROQ_API_KEY}"}, timeout=15).json()["data"]
+                print("      models available to your key:", [m["id"] for m in ms if not any(k in m["id"] for k in ("whisper", "guard", "tts"))])
+                print("      -> put two of them in .env as GROQ_MODEL and GROQ_FALLBACK_MODEL (the agents also auto-discover one)")
+            except Exception:
+                pass
     else:
         print(f"{BAD} {'Groq LLM':<22} GROQ_API_KEY missing (agents will use fallback templates)")
     # 5. Hopsworks
