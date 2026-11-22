@@ -99,7 +99,7 @@ class HopsworksStore:
         if create:
             fg = self.fs.get_or_create_feature_group(
                 name=name, version=C.FG_VERSION, primary_key=pk, event_time=et,
-                description=desc, online_enabled=False,
+                description=desc , time_travel_format="HUDI" , online_enabled=False, 
             )
         else:
             try:
@@ -126,7 +126,7 @@ class HopsworksStore:
         fg = self._fg(name, create=True)
         df = normalise_times(df)
         try:
-            fg.insert(df, wait=True)  # Hopsworks >= 4.x
+            fg.insert(df, wait=True , write_options={"kafka_timeout": 60})  # Hopsworks >= 4.x
         except TypeError:  # older client versions
             fg.insert(df, write_options={"wait_for_job": True})
         self._fgs.pop(name, None)
