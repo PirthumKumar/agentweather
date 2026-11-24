@@ -65,6 +65,8 @@ FG_MODEL_METRICS = "model_metrics"
 FG_DRIFT_REF = "drift_reference"
 FG_EXPLAIN = "explainability"
 FG_VERSION = _i("FG_VERSION", 1)
+STORE_RAW = (os.getenv("STORE_RAW") or "1") != "0"   # set STORE_RAW=0 to skip the hourly raw-table insert
+FG_TIME_TRAVEL = (os.getenv("FG_TIME_TRAVEL") or "HUDI").upper()
  
 # ----------------------------------------------------------------------------- modelling
 HORIZON = 24                    # hours ahead
