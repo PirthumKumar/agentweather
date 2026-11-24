@@ -26,7 +26,21 @@ WIND_DIR_COLS = ["ow_wind_dir", "om_wind_dir"]
 ALL_RAW_COLS = sorted({c for v in FUSION_MAP.values() for c in v} | set(WIND_DIR_COLS)
                       | {"ow_pm25", "ow_pm10", "aq_pm25", "aq_pm10", "om_pm25"})
  
- 
+# The raw table must have the SAME columns on every insert (the Feature Store fixes the schema on
+# the first insert). Missing sources become NaN floats instead of missing/None columns.
+RAW_SCHEMA = ["ow_temp", "ow_humidity", "ow_wind_speed", "ow_wind_dir", "ow_precip", "ow_pm25", "ow_pm10", "ow_aqi",
+              "aq_aqi", "aq_pm25", "aq_pm10",
+              "om_temp", "om_humidity", "om_precip", "om_wind_speed", "om_wind_dir", "om_aqi", "om_pm25", "om_uv"]
+
+
+def conform_raw(raw: pd.DataFrame) -> pd.DataFrame:
+    """ts + every RAW_SCHEMA column as float64 (NaN when a source did not report)."""
+    raw = raw.reset_index(drop=True)
+    out = pd.DataFrame({"ts": raw["ts"]})
+    for c in RAW_SCHEMA:
+        out[c] = pd.to_numeric(raw[c], errors="coerce").astype("float64") if c in raw else np.nan
+    return out
+
 def fuse(raw: pd.DataFrame, mode: str | None = None) -> pd.DataFrame:
     """raw: columns ts + any source columns  ->  DataFrame[ts, aqi, temp, ..., wind_dir, n_sources]"""
     mode = mode or os.getenv("FUSION_MODE", "priority")
