@@ -8,3 +8,4 @@ python-dotenv>=1.0
 hopsworks>=4.2
 delta-spark
 confluent_kafka.__version__=2.15.1
+deltalake>=2.3
